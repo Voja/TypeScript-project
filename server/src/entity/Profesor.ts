@@ -13,6 +13,9 @@ export class Profesor {
     ime: string;
 
     @Column()
+    email: string;
+
+    @Column()
     prezime: string;
 
     @Column({

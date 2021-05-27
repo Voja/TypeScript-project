@@ -22,6 +22,6 @@ export class Prijava {
     fajl: string
 
     @Column()
-    status: 'kreiran' | 'ocenjen'
+    status: 'kreirana' | 'ocenjena'
 
 }

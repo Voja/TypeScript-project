@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { createConnection, getRepository } from "typeorm";
 import * as express from "express";
 import * as session from 'express-session'
 import { Request, Response } from "express";
@@ -9,6 +9,8 @@ import * as https from 'https'
 import * as fs from 'fs'
 import * as multer from 'multer';
 import * as path from 'path';
+import { Student } from "./entity/Student";
+import { Profesor } from "./entity/Profesor";
 
 const upload = multer({ dest: path.resolve('img/') })
 createConnection().then(async connection => {
@@ -37,12 +39,36 @@ createConnection().then(async connection => {
         }
 
     }))
+    app.post('/login', async (req, res) => {
+        const { email, password } = req.body;
+        const studenti = await getUser(Student, email, password);
+        if (studenti.length !== 1) {
+            const profesori = await getUser(Profesor, email, password);
+            if (profesori.length !== 1) {
+                res.sendStatus(404);
+            } else {
+                (req.session as any).user = profesori[0];
+                req.session.save();
+                res.json(profesori[0]);
+            }
+        } else {
+            (req.session as any).user = studenti[0];
+            req.session.save();
+            res.json(studenti[0]);
+        }
 
+    })
+    app.use((req, res, next) => {
+        const user = (req.session as any).user;
+        if (!user) {
+            res.sendStatus(403);
+        } else {
+            next();
+        }
+    })
 
     Routes.forEach(route => {
-        app[route.method](route.route, (req: Request, res: Response) => {
-            route.controller[route.action](req, res);
-        });
+        app[route.method](route.route, ...route.action);
     });
 
     // setup express app here
@@ -60,3 +86,14 @@ createConnection().then(async connection => {
 
 
 }).catch(error => console.log(error));
+async function getUser(table: typeof Student | typeof Profesor, email: string, password: string) {
+
+    const repository = getRepository(table);
+    return await repository.find({
+        where: {
+            email: email,
+            sifra: password,
+
+        }
+    })
+}

@@ -18,6 +18,9 @@ export class Student {
     prezime: string;
 
     @Column()
+    email: string;
+
+    @Column()
     godinaUpisa: number;
 
     @Column()

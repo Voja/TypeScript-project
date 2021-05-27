@@ -21,6 +21,5 @@ export class Predmet {
     @Column()
     semestar: number;
 
-    @OneToMany(type => Seminarski, s => s.predmet)
-    seminarskiRadovi: Seminarski[];
+
 }

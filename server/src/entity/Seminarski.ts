@@ -25,6 +25,6 @@ export class Seminarski {
     @ManyToOne(type => Profesor, { eager: true })
     mentor: Profesor;
 
-    @ManyToOne(type => Predmet, p => p.seminarskiRadovi, { eager: true, primary: true, onDelete: 'CASCADE' })
+    @ManyToOne(type => Predmet, { eager: true })
     predmet: Predmet;
 }
