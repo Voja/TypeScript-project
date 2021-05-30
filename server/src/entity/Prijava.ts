@@ -1,4 +1,5 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Profesor } from "./Profesor";
 import { Seminarski } from "./Seminarski";
 import { Student } from "./Student";
 
@@ -6,10 +7,14 @@ import { Student } from "./Student";
 export class Prijava {
 
 
+    @PrimaryColumn()
+    studentId: number;
+
     @Column()
     brojPoena: number;
 
-    @ManyToOne(type => Student, { eager: true, primary: true })
+    @ManyToOne(type => Student, { primary: true })
+    @JoinColumn({ name: 'studentId' })
     student: Student;
 
     @ManyToOne(type => Seminarski, { eager: true, primary: true })
@@ -20,6 +25,10 @@ export class Prijava {
 
     @Column()
     fajl: string
+
+
+    @ManyToOne(type => Profesor, { eager: true })
+    mentor: Profesor;
 
     @Column()
     status: 'kreirana' | 'ocenjena'

@@ -7,12 +7,9 @@ import { Routes } from "./routes";
 import * as cors from 'cors'
 import * as https from 'https'
 import * as fs from 'fs'
-import * as multer from 'multer';
-import * as path from 'path';
 import { Student } from "./entity/Student";
 import { Profesor } from "./entity/Profesor";
 
-const upload = multer({ dest: path.resolve('img/') })
 createConnection().then(async connection => {
     const key = fs.readFileSync('./key.pem', 'utf8');
     const cert = fs.readFileSync('./cert.pem', 'utf8');
@@ -54,9 +51,17 @@ createConnection().then(async connection => {
         } else {
             (req.session as any).user = studenti[0];
             req.session.save();
+            console.log(studenti[0]);
             res.json(studenti[0]);
         }
 
+    })
+    app.get('/check', async (req, res) => {
+        const user = (req.session as any).user;
+        if (!user) {
+            res.sendStatus(401);
+        }
+        res.json(user);
     })
     app.use((req, res, next) => {
         const user = (req.session as any).user;

@@ -1,6 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Predmet } from "./Predmet";
-import { Profesor } from "./Profesor";
 
 
 @Entity()
@@ -22,9 +21,7 @@ export class Seminarski {
 
 
 
-    @ManyToOne(type => Profesor, { eager: true })
-    mentor: Profesor;
 
-    @ManyToOne(type => Predmet, { eager: true })
+    @ManyToOne(type => Predmet, { eager: false })
     predmet: Predmet;
 }

@@ -1,11 +1,16 @@
 import { Request, Response } from "express";
-import { kreirajPrijavu, nadjiPrijavu, vratiSvePrijave } from "./actions/PrijavaActions";
+import { handleUpload, izmeniPrijavu, kreirajPrijavu, nadjiPrijavu, obrisiPrijavu, vratiSvePrijave } from "./actions/PrijavaActions";
 import { kreirajSeminarski, nadjiSeminarski, obrisiSeminarski, vratiSveSeminarske } from "./actions/SeminarskiActions";
 
+import * as multer from 'multer';
+import * as path from 'path';
+import { getFile } from "./actions/FajlActions";
+
+const upload = multer({ dest: path.resolve('img/') })
 export interface Route {
     method: 'get' | 'post' | 'patch' | 'delete',
     route: string,
-    action: ((req: Request, res: Response, next?: any) => Promise<void>)[],
+    action: any[],
 
 }
 export const Routes: Route[] = [{
@@ -15,15 +20,15 @@ export const Routes: Route[] = [{
 }, {
     method: 'post',
     route: '/prijava',
-    action: [kreirajPrijavu]
+    action: [upload.single('file'), handleUpload, kreirajPrijavu]
 }, {
     method: 'patch',
     route: '/prijava/:student/:seminarski',
-    action: [nadjiPrijavu, kreirajPrijavu]
+    action: [nadjiPrijavu, upload.single('file'), handleUpload, izmeniPrijavu]
 }, {
     method: 'delete',
     route: '/prijava/:student/:seminarski',
-    action: [nadjiPrijavu, kreirajPrijavu]
+    action: [nadjiPrijavu, obrisiPrijavu]
 }, {
     method: 'patch',
     route: '/prijava/:student/:seminarski/oceni',
@@ -44,6 +49,10 @@ export const Routes: Route[] = [{
     method: 'delete',
     route: '/seminarski/:id',
     action: [nadjiSeminarski, obrisiSeminarski]
+}, {
+    method: 'get',
+    route: '/fajl/:filename',
+    action: [getFile]
 }
 
 ];

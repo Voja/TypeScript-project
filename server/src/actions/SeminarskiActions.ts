@@ -14,9 +14,7 @@ export async function kreirajSeminarski(req: Request, res: Response) {
     const data = req.body as Partial<Seminarski>;
     const insertResult = await getRepository(Seminarski).insert({
         maksBrojPoena: data.maksBrojPoena,
-        mentor: {
-            id: data.mentor.id,
-        },
+
         naziv: data.naziv,
         opis: data.opis,
         predmet: {
@@ -31,9 +29,7 @@ export async function izmeniSeminarski(req: Request, res: Response) {
     const data = req.body as Partial<Seminarski>;
     await getRepository(Seminarski).update(seminarski.id, {
         maksBrojPoena: data.maksBrojPoena,
-        mentor: {
-            id: data.mentor.id
-        },
+
         naziv: data.naziv,
         opis: data.opis,
 

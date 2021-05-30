@@ -3,6 +3,8 @@ import { getRepository } from "typeorm";
 import { Prijava } from "../entity/Prijava";
 import { Profesor } from "../entity/Profesor";
 import { Student } from "../entity/Student";
+import * as path from 'path';
+import * as fs from 'fs';
 
 
 export async function vratiSvePrijave(req: Request, res: Response) {
@@ -35,6 +37,9 @@ export async function kreirajPrijavu(req: Request, res: Response) {
         nazivTeme: data.nazivTeme,
         seminarski: {
             id: data.seminarski.id
+        },
+        mentor: {
+            id: data.mentor.id
         },
         status: 'kreirana',
         student: {
@@ -130,4 +135,14 @@ export async function nadjiPrijavu(req: Request, res: Response, next?: any) {
     }
     (req as any).prijava = prijava;
     next();
+}
+export async function handleUpload(request: Request, res: Response, next?: any) {
+    const tempPath = request.file.path;
+    const targetPath = path.resolve('img/' + request.file.originalname);
+    const data = request.body;
+    data.fajl = request.file.originalname;
+    fs.rename(tempPath, targetPath, err => {
+
+    })
+
 }
