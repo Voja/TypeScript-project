@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Container, Grid, Table } from 'semantic-ui-react'
+import PrijavaModal from '../components/PrijavaModal'
 import SeminarskiTabela from '../components/SeminarskiTabela'
 import { Seminarski } from '../model'
 
@@ -11,6 +12,9 @@ interface Props {
 export default function ObavezePage(props: Props) {
 
     const [selSeminarski, setSelSeminarski] = useState<Seminarski | undefined>(undefined)
+    const [open, setOpen] = useState(false)
+
+    const close = () => { setOpen(false) }
 
     const onRowClick = (sem: Seminarski) => {
         setSelSeminarski(prev => {
@@ -23,6 +27,7 @@ export default function ObavezePage(props: Props) {
 
     return (
         <Grid padded>
+            <PrijavaModal open={(selSeminarski && open) || false} close={close} seminarskiId={selSeminarski?.id} />
             <Grid.Row columns='16'>
                 <Grid.Column textAlign='center' width='13'>
                     <h2>Obaveze</h2>
@@ -30,7 +35,9 @@ export default function ObavezePage(props: Props) {
                 {
                     selSeminarski && (
                         <Grid.Column width='2'>
-                            <Button fluid primary>Prijavi</Button>
+                            <Button fluid primary onClick={() => {
+                                setOpen(true);
+                            }} >Prijavi</Button>
                         </Grid.Column>
                     )
                 }

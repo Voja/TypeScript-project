@@ -5,6 +5,7 @@ import { kreirajSeminarski, nadjiSeminarski, obrisiSeminarski, vratiSveSeminarsk
 import * as multer from 'multer';
 import * as path from 'path';
 import { getFile } from "./actions/FajlActions";
+import { vratiProfesore } from "./actions/ProfesorActions";
 
 const upload = multer({ dest: path.resolve('img/') })
 export interface Route {
@@ -53,6 +54,10 @@ export const Routes: Route[] = [{
     method: 'get',
     route: '/fajl/:filename',
     action: [getFile]
+}, {
+    method: 'get',
+    route: '/profesor',
+    action: [vratiProfesore]
 }
 
 ];
