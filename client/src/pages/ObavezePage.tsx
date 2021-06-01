@@ -1,8 +1,10 @@
+import axios from 'axios'
 import React, { useState } from 'react'
 import { Button, Container, Grid, Table } from 'semantic-ui-react'
 import PrijavaModal from '../components/PrijavaModal'
 import SeminarskiTabela from '../components/SeminarskiTabela'
 import { Seminarski } from '../model'
+import { SERVER_URL } from '../util'
 
 
 interface Props {
@@ -24,10 +26,12 @@ export default function ObavezePage(props: Props) {
             return sem;
         })
     }
-
+    const kreirajPrijavu = async (data: FormData) => {
+        const res = await axios.post(SERVER_URL + '/prijava', data);
+    }
     return (
         <Grid padded>
-            <PrijavaModal open={(selSeminarski && open) || false} close={close} seminarskiId={selSeminarski?.id} />
+            <PrijavaModal open={(selSeminarski && open) || false} close={close} onSubmit={kreirajPrijavu} seminarskiId={selSeminarski?.id} />
             <Grid.Row columns='16'>
                 <Grid.Column textAlign='center' width='13'>
                     <h2>Obaveze</h2>

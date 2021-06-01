@@ -10,7 +10,7 @@ export class Prijava {
     @PrimaryColumn()
     studentId: number;
 
-    @Column()
+    @Column({ nullable: true })
     brojPoena: number;
 
     @ManyToOne(type => Student, { primary: true })
@@ -24,7 +24,7 @@ export class Prijava {
     nazivTeme: string
 
     @Column()
-    fajl: string
+    file: string
 
 
     @ManyToOne(type => Profesor, { eager: true })

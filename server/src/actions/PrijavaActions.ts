@@ -26,28 +26,29 @@ export async function vratiSvePrijave(req: Request, res: Response) {
 }
 
 export async function kreirajPrijavu(req: Request, res: Response) {
-    const data = req.body as Partial<Prijava>;
+    const data = req.body;
     if (!data) {
         res.sendStatus(400);
         return;
     }
+    console.log('kreirajnje');
+    console.log(data);
     const insertResult = await getRepository(Prijava).insert({
         brojPoena: data.brojPoena,
-        fajl: data.fajl,
+        file: data.file,
         nazivTeme: data.nazivTeme,
         seminarski: {
-            id: data.seminarski.id
+            id: data.seminarski
         },
         mentor: {
-            id: data.mentor.id
+            id: data.mentor
         },
         status: 'kreirana',
         student: {
-            id: data.student.id
+            id: (req.session as any).user.id
         }
     });
-    const id = insertResult.identifiers[0].id;
-    res.json({ ...data, id: id });
+    res.sendStatus(200);
 }
 export async function izmeniPrijavu(req: Request, res: Response) {
     const staraPrijava = (req as any).prijava as Prijava;
@@ -62,7 +63,7 @@ export async function izmeniPrijavu(req: Request, res: Response) {
         }
     }, {
         nazivTeme: data.nazivTeme,
-        fajl: data.fajl
+        file: data.file
     });
     res.sendStatus(204);
 }
@@ -138,11 +139,11 @@ export async function nadjiPrijavu(req: Request, res: Response, next?: any) {
 }
 export async function handleUpload(request: Request, res: Response, next?: any) {
     const tempPath = request.file.path;
-    const targetPath = path.resolve('img/' + request.file.originalname);
+    const targetPath = path.resolve('file/' + request.file.originalname);
     const data = request.body;
-    data.fajl = request.file.originalname;
+    data.file = request.file.originalname;
     fs.rename(tempPath, targetPath, err => {
 
     })
-
+    next();
 }

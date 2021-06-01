@@ -1,12 +1,12 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { Form, Modal } from 'semantic-ui-react'
+import React, { useEffect, useRef, useState } from 'react'
+import { Form, Modal, Ref } from 'semantic-ui-react'
 import { Prijava, Profesor } from '../model'
 import { SERVER_URL, setFormState } from '../util'
 
 interface Props {
     prijava?: Prijava,
-    onSubmit?: (pr: Partial<Prijava>) => void,
+    onSubmit?: (fd: FormData) => void,
     open: boolean,
     close: () => void,
     seminarskiId?: number
@@ -17,6 +17,7 @@ export default function PrijavaModal(props: Props) {
 
     const [profesori, setProfesori] = useState<Profesor[]>([])
     const [nazivTeme, setNazivTeme] = useState('');
+    const fileRef = useRef<HTMLDivElement>(null);
     const [selProf, setSelProf] = useState<Profesor | undefined>(undefined)
     useEffect(() => {
         axios.get(SERVER_URL + '/profesor').then(res => {
@@ -30,7 +31,21 @@ export default function PrijavaModal(props: Props) {
                 Prijava
             </Modal.Header>
             <Modal.Content>
-                <Form>
+                <Form encType="multipart/form-data" onSubmit={e => {
+                    const data = new FormData();
+                    const inputElement = fileRef.current?.lastChild?.lastChild as HTMLInputElement;
+
+                    if (!inputElement.files) {
+                        return;
+                    }
+                    data.append('file', inputElement.files[0]);
+                    data.append('nazivTeme', nazivTeme);
+                    data.append('mentor', selProf?.id + '');
+                    data.append('seminarski', props.seminarskiId + '');
+                    if (props.onSubmit)
+                        props.onSubmit(data);
+
+                }} >
                     <Form.Input value={nazivTeme} onChange={setFormState(setNazivTeme)} required label='Naziv teme' />
                     <Form.Dropdown required selection label='Mentor' value={selProf?.id} options={profesori.filter(element => {
                         return element.predaje.reduce((prev: boolean, val) => {
@@ -44,7 +59,11 @@ export default function PrijavaModal(props: Props) {
                             onClick: () => { setSelProf(element) }
                         }
                     })} />
-                    <Form.Input required type='file' label='Fajl' />
+                    <Ref innerRef={fileRef}>
+                        <Form.Input required type='file' label='Fajl' />
+
+                    </Ref>
+
                     <Form.Button>Prijavi</Form.Button>
                 </Form>
             </Modal.Content>

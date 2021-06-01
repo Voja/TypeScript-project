@@ -7,7 +7,7 @@ import * as path from 'path';
 import { getFile } from "./actions/FajlActions";
 import { vratiProfesore } from "./actions/ProfesorActions";
 
-const upload = multer({ dest: path.resolve('img/') })
+const upload = multer({ dest: path.resolve('file/') })
 export interface Route {
     method: 'get' | 'post' | 'patch' | 'delete',
     route: string,
