@@ -1,16 +1,20 @@
 
 
-import React from 'react'
-import { Button, Table } from 'semantic-ui-react'
+import React, { useState } from 'react'
+import { Button, Icon, Pagination, Table } from 'semantic-ui-react'
 import { Prijava } from '../model'
-import { ucitajFajl } from '../util'
+import { SERVER_URL, ucitajFajl } from '../util'
 
 interface Props {
-    prijave: Prijava[]
+    prijave: Prijava[],
+    onRowClick: (prijava: Prijava) => void,
+    active?: Prijava
 }
 export default function PredatePrijaveTabela(props: Props) {
+    const [activePage, setActivePage] = useState(1)
+    const totalPages = Math.ceil(props.prijave.length / 4);
     return (
-        <Table>
+        <Table selectable>
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell>Naziv teme</Table.HeaderCell>
@@ -22,30 +26,43 @@ export default function PredatePrijaveTabela(props: Props) {
             </Table.Header>
             <Table.Body>
                 {
-                    props.prijave.map(element => {
+                    props.prijave.slice((activePage - 1) * 4, 4 * activePage).map(element => {
                         return (
-                            <Table.Row>
+                            <Table.Row active={props.active === element} onClick={() => {
+                                props.onRowClick(element);
+                            }}>
                                 <Table.Cell>{element.nazivTeme}</Table.Cell>
                                 <Table.Cell>{element.seminarski.naziv}</Table.Cell>
                                 <Table.Cell>{element.mentor.ime + ' ' + element.mentor.prezime}</Table.Cell>
-                                <Table.Cell link icon='file pdf outline' onClick={() => {
-                                    ucitajFajl(element.fajl);
-                                }}>
-                                    Vidi fajl
-                                        </Table.Cell>
-                                <Table.Cell>{element.status === 'ocenjena' ? element.brojPoena : 'Nije ocenjen'}</Table.Cell>{
-                                    element.status === 'kreirana' && (
-                                        <Table.Cell >
-                                            <Button>Izmeni</Button>
-                                            <Button>Obrisi</Button>
-                                        </Table.Cell>
-                                    )
-                                }
+                                <Table.Cell  >
+                                    <Icon link name='file pdf outline' size='big' onClick={() => {
+                                        ucitajFajl(element.file);
+                                    }} />
+                                    <br />
+                                    <a target="_blank" href={SERVER_URL + '/fajl/' + element.file}>{element.file}</a>
+                                </Table.Cell>
+                                <Table.Cell>{element.status === 'ocenjena' ? element.brojPoena : 'Nije ocenjen'}</Table.Cell>
                             </Table.Row>
                         )
                     })
                 }
             </Table.Body>
-        </Table>
+            <Table.Footer>
+                <Table.Row>
+                    <Table.HeaderCell colSpan='5'>
+                        <Pagination totalPages={totalPages} activePage={activePage}
+                            onPageChange={(event, data) => {
+                                console.log(data);
+                                if (typeof data.activePage === 'string') {
+
+                                    setActivePage(parseInt(data.activePage))
+                                } else {
+                                    setActivePage(data.activePage || 1);
+                                }
+                            }} />
+                    </Table.HeaderCell>
+                </Table.Row>
+            </Table.Footer>
+        </Table >
     )
 }

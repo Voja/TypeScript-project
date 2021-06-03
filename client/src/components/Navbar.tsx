@@ -6,6 +6,7 @@ import { isStudent, Profesor, Student } from '../model'
 interface Props {
     user: Student | Profesor | undefined
     full?: boolean,
+    logout: () => void
 }
 export default function Navbar(props: Props) {
     if (!props.user) {
@@ -48,7 +49,7 @@ export default function Navbar(props: Props) {
             }
             <Menu.Menu position='right'>
                 <Menu.Item >
-                    <Button>Logout</Button>
+                    <Button onClick={props.logout}>Logout</Button>
                 </Menu.Item>
             </Menu.Menu>
         </Menu>

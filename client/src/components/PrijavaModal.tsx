@@ -24,7 +24,13 @@ export default function PrijavaModal(props: Props) {
             setProfesori(res.data);
         })
     }, [])
+    useEffect(() => {
+        setNazivTeme(props.prijava?.nazivTeme || '');
+        if (props.prijava) {
+            setSelProf(profesori.find(element => element.id === props.prijava?.mentor.id));
 
+        }
+    }, [props.prijava, profesori])
     return (
         <Modal open={props.open} onClose={props.close}>
             <Modal.Header>
@@ -38,7 +44,11 @@ export default function PrijavaModal(props: Props) {
                     if (!inputElement.files) {
                         return;
                     }
+
+
                     data.append('file', inputElement.files[0]);
+
+
                     data.append('nazivTeme', nazivTeme);
                     data.append('mentor', selProf?.id + '');
                     data.append('seminarski', props.seminarskiId + '');

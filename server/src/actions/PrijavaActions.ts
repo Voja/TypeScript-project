@@ -31,9 +31,8 @@ export async function kreirajPrijavu(req: Request, res: Response) {
         res.sendStatus(400);
         return;
     }
-    console.log('kreirajnje');
-    console.log(data);
-    const insertResult = await getRepository(Prijava).insert({
+
+    await getRepository(Prijava).insert({
         brojPoena: data.brojPoena,
         file: data.file,
         nazivTeme: data.nazivTeme,
@@ -48,14 +47,21 @@ export async function kreirajPrijavu(req: Request, res: Response) {
             id: (req.session as any).user.id
         }
     });
-    res.sendStatus(200);
+    res.json(await getRepository(Prijava).findOne({
+        where: {
+            studentId: (req.session as any).user.id,
+            seminarski: {
+                id: data.seminarski
+            }
+        }
+    }));
 }
 export async function izmeniPrijavu(req: Request, res: Response) {
     const staraPrijava = (req as any).prijava as Prijava;
     const data = req.body as Partial<Prijava>;
-    const updateResult = await getRepository(Prijava).update({
+    await getRepository(Prijava).update({
         student: {
-            id: staraPrijava.student.id,
+            id: (req.session as any).user.id,
         },
         seminarski: {
             id: staraPrijava.seminarski.id,
@@ -65,13 +71,20 @@ export async function izmeniPrijavu(req: Request, res: Response) {
         nazivTeme: data.nazivTeme,
         file: data.file
     });
-    res.sendStatus(204);
+    res.json(await getRepository(Prijava).findOne({
+        where: {
+            studentId: (req.session as any).user.id,
+            seminarski: {
+                id: data.seminarski
+            }
+        }
+    }));
 }
 export async function obrisiPrijavu(req: Request, res: Response) {
     const staraPrijava = (req as any).prijava as Prijava;
     await getRepository(Prijava).delete({
         student: {
-            id: staraPrijava.student.id,
+            id: (req.session as any).user.id,
         },
         seminarski: {
             id: staraPrijava.seminarski.id,
@@ -81,7 +94,14 @@ export async function obrisiPrijavu(req: Request, res: Response) {
     res.sendStatus(204);
 }
 export async function oceniPrijavu(req: Request, res: Response) {
-    const staraPrijava = (req as any).prijava as Prijava;
+    const staraPrijava = await getRepository(Prijava).findOne({
+        where: {
+            studentId: req.body.user,
+            seminarski: {
+                id: req.body.seminarski
+            }
+        }
+    })
     const user = (req.session as any).user;
     if (!(user instanceof Profesor)) {
         res.sendStatus(403);
@@ -90,7 +110,7 @@ export async function oceniPrijavu(req: Request, res: Response) {
     await getRepository(Prijava).update(
         {
             student: {
-                id: staraPrijava.student.id,
+                id: (req.params as any).student,
             },
             seminarski: {
                 id: staraPrijava.seminarski.id,
@@ -104,7 +124,7 @@ export async function oceniPrijavu(req: Request, res: Response) {
 }
 
 export async function nadjiPrijavu(req: Request, res: Response, next?: any) {
-    const student = parseInt(req.params.student);
+    const student = (req.session as any).user.id;
     if (isNaN(student)) {
         res.sendStatus(400);
         return;
@@ -114,7 +134,8 @@ export async function nadjiPrijavu(req: Request, res: Response, next?: any) {
         res.sendStatus(400);
         return;
     }
-
+    console.log(student);
+    console.log(seminarski);
     const prijava = await getRepository(Prijava).findOne({
         where: {
             student: {
@@ -138,6 +159,9 @@ export async function nadjiPrijavu(req: Request, res: Response, next?: any) {
     next();
 }
 export async function handleUpload(request: Request, res: Response, next?: any) {
+    if (!request.file) {
+        next();
+    }
     const tempPath = request.file.path;
     const targetPath = path.resolve('file/' + request.file.originalname);
     const data = request.body;

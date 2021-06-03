@@ -40,5 +40,5 @@ export interface Prijava {
     seminarski: Seminarski,
     nazivTeme: string,
     mentor: Profesor,
-    fajl: string
+    file: string
 }

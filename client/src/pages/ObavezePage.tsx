@@ -1,14 +1,15 @@
 import axios from 'axios'
 import React, { useState } from 'react'
-import { Button, Container, Grid, Table } from 'semantic-ui-react'
+import { Button, Container, Grid, Header, Table } from 'semantic-ui-react'
 import PrijavaModal from '../components/PrijavaModal'
 import SeminarskiTabela from '../components/SeminarskiTabela'
-import { Seminarski } from '../model'
+import { Prijava, Seminarski } from '../model'
 import { SERVER_URL } from '../util'
 
 
 interface Props {
-    seminarski: Seminarski[]
+    seminarski: Seminarski[],
+    prijavi: (prijava: Prijava) => void
 }
 
 export default function ObavezePage(props: Props) {
@@ -28,6 +29,15 @@ export default function ObavezePage(props: Props) {
     }
     const kreirajPrijavu = async (data: FormData) => {
         const res = await axios.post(SERVER_URL + '/prijava', data);
+        setSelSeminarski(undefined);
+        props.prijavi(res.data);
+    }
+    if (props.seminarski.length === 0) {
+        return (
+            <Header textAlign='center'>
+                <h1>Student je predao sve obaveze</h1>
+            </Header>
+        )
     }
     return (
         <Grid padded>

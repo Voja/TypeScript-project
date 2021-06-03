@@ -56,12 +56,25 @@ createConnection().then(async connection => {
         }
 
     })
+    app.post('/logout', async (request: Request, response: Response) => {
+        request.session.destroy((err) => {
+            if (err)
+                response.sendStatus(500);
+        })
+        response.sendStatus(204);
+    })
     app.get('/check', async (req, res) => {
         const user = (req.session as any).user;
         if (!user) {
             res.sendStatus(401);
         }
-        res.json(user);
+        if (user.brojIndeksa) {
+            (req.session as any).user = await getRepository(Student).findOne(user.id)
+        } else {
+            (req.session as any).user = await getRepository(Profesor).findOne(user.id)
+        }
+        req.session.save();
+        res.json((req.session as any).user);
     })
     app.use((req, res, next) => {
         const user = (req.session as any).user;

@@ -8,6 +8,7 @@ export function setFormState<T>(setState: (val: T) => void) {
 }
 
 export async function ucitajFajl(naziv: string) {
+
     const data = (await axios.get(SERVER_URL + '/fajl/' + naziv, {
         responseType: 'blob',
 
