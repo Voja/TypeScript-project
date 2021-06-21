@@ -67,6 +67,7 @@ createConnection().then(async connection => {
         const user = (req.session as any).user;
         if (!user) {
             res.sendStatus(401);
+            return;
         }
         if (user.brojIndeksa) {
             (req.session as any).user = await getRepository(Student).findOne(user.id)
@@ -76,14 +77,14 @@ createConnection().then(async connection => {
         req.session.save();
         res.json((req.session as any).user);
     })
-    app.use((req, res, next) => {
-        const user = (req.session as any).user;
-        if (!user) {
-            res.sendStatus(403);
-        } else {
-            next();
-        }
-    })
+    /*     app.use((req, res, next) => {
+            const user = (req.session as any).user;
+            if (!user) {
+                res.sendStatus(403);
+            } else {
+                next();
+            }
+        }) */
 
     Routes.forEach(route => {
         app[route.method](route.route, ...route.action);

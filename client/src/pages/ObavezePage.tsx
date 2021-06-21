@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useState } from 'react'
-import { Button, Container, Grid, Header, Table } from 'semantic-ui-react'
+import { Button, Grid, Header } from 'semantic-ui-react'
 import PrijavaModal from '../components/PrijavaModal'
 import SeminarskiTabela from '../components/SeminarskiTabela'
 import { Prijava, Seminarski } from '../model'

@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { Button, Grid } from 'semantic-ui-react'
+import React, { useState } from 'react';
+import { Grid } from 'semantic-ui-react';
 import PredmetOpis from '../components/PredmetOpis';
-import PredmetTabela from '../components/PredmetTabela'
+import PredmetTabela from '../components/PredmetTabela';
 import SeminarskiTabela from '../components/SeminarskiTabela';
-import { Predmet } from '../model'
+import { Predmet } from '../model';
 
 interface Props {
     predmeti: Predmet[],
@@ -22,7 +22,7 @@ export default function PredmetiPage(props: Props) {
         <Grid padded >
             <Grid.Row textAlign='center'>
                 <Grid.Column textAlign='center' width='16' >
-                    <h1>Spisak predmeta koje student slusa</h1>
+                    <h1>Predmeti</h1>
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row columns='16'>

@@ -1,7 +1,7 @@
 
 
 import React, { useState } from 'react'
-import { Button, Icon, Pagination, Table } from 'semantic-ui-react'
+import { Icon, Pagination, Table } from 'semantic-ui-react'
 import { Prijava } from '../model'
 import { SERVER_URL, ucitajFajl } from '../util'
 
@@ -21,7 +21,7 @@ export default function PredatePrijaveTabela(props: Props) {
                     <Table.HeaderCell>Seminarski rad</Table.HeaderCell>
                     <Table.HeaderCell>Mentor</Table.HeaderCell>
                     <Table.HeaderCell>Rad</Table.HeaderCell>
-                    <Table.HeaderCell>Ocena</Table.HeaderCell>
+                    <Table.HeaderCell>Broj poena</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -39,7 +39,7 @@ export default function PredatePrijaveTabela(props: Props) {
                                         ucitajFajl(element.file);
                                     }} />
                                     <br />
-                                    <a target="_blank" href={SERVER_URL + '/fajl/' + element.file}>{element.file}</a>
+                                    <a target="_blank" rel="noreferrer" href={SERVER_URL + '/fajl/' + element.file}>{element.file}</a>
                                 </Table.Cell>
                                 <Table.Cell>{element.status === 'ocenjena' ? element.brojPoena : 'Nije ocenjen'}</Table.Cell>
                             </Table.Row>

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
+import { Prijava } from "../entity/Prijava";
 import { Seminarski } from "../entity/Seminarski";
 
 

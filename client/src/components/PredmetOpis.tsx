@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Container, Form, Header } from 'semantic-ui-react'
+import { Form } from 'semantic-ui-react'
 import { Predmet } from '../model'
 interface Props {
     predmet: Predmet

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Button, Container, Form } from 'semantic-ui-react'
+import React, { useState } from 'react';
+import { Container, Form } from 'semantic-ui-react';
 import { setFormState } from '../util';
 
 interface Props {

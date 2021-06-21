@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Grid, Segment } from 'semantic-ui-react'
+import { Grid, Segment } from 'semantic-ui-react'
 
 export default function Loading() {
     return (

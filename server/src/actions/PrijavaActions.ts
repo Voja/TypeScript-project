@@ -94,24 +94,19 @@ export async function obrisiPrijavu(req: Request, res: Response) {
     res.sendStatus(204);
 }
 export async function oceniPrijavu(req: Request, res: Response) {
+    console.log('oceni');
     const staraPrijava = await getRepository(Prijava).findOne({
         where: {
-            studentId: req.body.user,
+            studentId: req.body.studentId,
             seminarski: {
                 id: req.body.seminarski
             }
         }
     })
-    const user = (req.session as any).user;
-    if (!(user instanceof Profesor)) {
-        res.sendStatus(403);
-        return;
-    }
+
     await getRepository(Prijava).update(
         {
-            student: {
-                id: (req.params as any).student,
-            },
+            studentId: req.body.studentId,
             seminarski: {
                 id: staraPrijava.seminarski.id,
 

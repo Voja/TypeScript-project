@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Header, Menu, Segment } from 'semantic-ui-react'
+import { Button, Header, Menu } from 'semantic-ui-react'
 import { isStudent, Profesor, Student } from '../model'
 interface Props {
     user: Student | Profesor | undefined
@@ -21,7 +21,9 @@ export default function Navbar(props: Props) {
 
         <Menu borderless color='grey' fluid>
             <Menu.Item header >
-                {props.user.ime + ' ' + props.user.prezime}
+                {props.user.ime + ' ' + props.user.prezime} - {
+                    isStudent(props.user) ? 'student' : 'profesor'
+                }
             </Menu.Item>
             <Menu.Item as={Link} to='/' >
                 Ispiti
@@ -37,12 +39,18 @@ export default function Navbar(props: Props) {
                         <Menu.Item as={Link} to='/predato' >
                             Predati radovi
                         </Menu.Item>
+                        <Menu.Item as={Link} to='/slika' >
+                            Radnom slika
+                        </Menu.Item>
 
                     </>
                 ) : (
                     <>
-                        <Menu.Item>
-                            Predati seminarski radovi
+                        <Menu.Item as={Link} to='/prijava'>
+                            Predate prijave
+                        </Menu.Item>
+                        <Menu.Item as={Link} to='/seminarski'>
+                            Seminarski radovi
                         </Menu.Item>
                     </>
                 )

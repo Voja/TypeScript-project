@@ -36,6 +36,7 @@ export interface Seminarski {
 }
 export interface Prijava {
     brojPoena: number,
+    studentId: number,
     status: 'kreirana' | 'ocenjena',
     seminarski: Seminarski,
     nazivTeme: string,

@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import { isStudent, Prijava, Profesor, Student } from './model';
+import { isStudent, Predmet, Prijava, Profesor, Seminarski, Student } from './model';
 import Login from './components/Login';
 import Loading from './components/Loading';
 import axios from 'axios';
 import { SERVER_URL } from './util';
-import IspitiPage from './pages/IspitiPage';
+import IspitiPage from './pages/SeminarskiPage';
 import PredmetiPage from './pages/PredmetiPage';
 import ObavezePage from './pages/ObavezePage';
 import PredatePrijavePage from './pages/PredatePrijavePage';
+import PredmetiIzmena from './pages/OceniPrijavePage';
+import SeminarskiPage from './pages/SeminarskiPage';
+import RandomSlika from './pages/RandomSlika';
 axios.defaults.withCredentials = true;
 function App() {
   const [user, setUser] = useState<Student | Profesor | undefined>(undefined);
@@ -83,6 +85,82 @@ function App() {
 
     })
   }
+
+  const kreirajSeminarski = async (seminarski: Partial<Seminarski>, predmet: Predmet) => {
+    const data = (await axios.post(SERVER_URL + '/seminarski', {
+      ...seminarski,
+      predmet: {
+        id: predmet.id
+      }
+    })).data;
+    setUser(prev => {
+      if (!prev || isStudent(prev)) {
+        return prev;
+      }
+      return {
+        ...prev, predaje: prev.predaje.map(element => {
+          if (element.id === predmet.id) {
+            return {
+              ...element, seminarski: [...element.seminarski, data]
+            }
+          } else {
+            return element;
+          }
+        })
+      }
+    })
+  }
+  const izmeniSeminarski = async (seminarski: Partial<Seminarski>, predmet: Predmet) => {
+    await axios.patch(SERVER_URL + '/seminarski/' + seminarski.id, {
+      ...seminarski,
+      predmet: {
+        id: predmet.id
+      }
+    })
+    setUser(prev => {
+      if (!prev || isStudent(prev)) {
+        console.log('student')
+        return prev;
+      }
+      return {
+        ...prev, predaje: prev.predaje.map(element => {
+          if (element.id === predmet.id) {
+            console.log('predmet')
+            return {
+              ...element, seminarski: element.seminarski.map(sem => {
+                if (sem.id === seminarski.id) {
+                  return { ...sem, ...seminarski }
+                }
+                return sem;
+              })
+            }
+          } else {
+            return element;
+          }
+        })
+      }
+    })
+  }
+  const obrisiSeminarski = async (sem: Seminarski) => {
+    if (!user || isStudent(user)) {
+      return;
+    }
+    await axios.delete(SERVER_URL + '/seminarski/' + sem.id);
+
+    setUser((prev) => {
+      if (!prev || isStudent(prev)) {
+        return prev;
+      }
+      return {
+        ...prev, predaje: prev.predaje.map(predmet => {
+          return {
+            ...predmet, seminarski: predmet.seminarski.filter(element => element !== sem)
+          }
+        })
+      }
+    })
+  }
+
   const logout = () => {
     axios.post(SERVER_URL + '/logout').then(res => {
       setUser(undefined);
@@ -108,7 +186,9 @@ function App() {
             <Route path='/predato'>
               <PredatePrijavePage prijave={user.prijave} izmeniPrijavu={izmeniPrijavu} obrisiPrijavu={obrisiPrijavu} />
             </Route>
-
+            <Route path='/slika'>
+              <RandomSlika />
+            </Route>
             <Route path='/'>
               <PredmetiPage predmeti={user.slusa} />
             </Route>
@@ -119,11 +199,15 @@ function App() {
       {
         user && !isStudent(user) && (
           <Switch>
-            <Route path='/ispit/:id'>
-              Jedan ispit
+            <Route path='/seminarski'>
+              <SeminarskiPage profesor={user}
+                kreirajSeminarski={kreirajSeminarski}
+                izmeniSeminarski={izmeniSeminarski}
+                obrisiSeminarski={obrisiSeminarski}
+              />
             </Route>
             <Route path='/prijava'>
-              Neocenjeni radovi
+              <PredmetiIzmena profesor={user} />
             </Route>
             <Route path='/'>
               <PredmetiPage predmeti={user.predaje} />

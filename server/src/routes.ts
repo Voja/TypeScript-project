@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { handleUpload, izmeniPrijavu, kreirajPrijavu, nadjiPrijavu, obrisiPrijavu, oceniPrijavu, vratiSvePrijave } from "./actions/PrijavaActions";
-import { kreirajSeminarski, nadjiSeminarski, obrisiSeminarski, vratiSveSeminarske } from "./actions/SeminarskiActions";
+import { izmeniSeminarski, kreirajSeminarski, nadjiSeminarski, obrisiSeminarski, vratiSveSeminarske } from "./actions/SeminarskiActions";
 
 import * as multer from 'multer';
 import * as path from 'path';
@@ -24,16 +24,16 @@ export const Routes: Route[] = [{
     action: [upload.single('file'), handleUpload, kreirajPrijavu]
 }, {
     method: 'patch',
+    route: '/prijava/oceni',
+    action: [oceniPrijavu]
+}, {
+    method: 'patch',
     route: '/prijava/:seminarski',
     action: [nadjiPrijavu, upload.single('file'), handleUpload, izmeniPrijavu]
 }, {
     method: 'delete',
     route: '/prijava/:seminarski',
     action: [nadjiPrijavu, obrisiPrijavu]
-}, {
-    method: 'patch',
-    route: '/prijava/oceni',
-    action: [oceniPrijavu]
 }, {
     method: 'get',
     route: '/seminarski',
@@ -45,7 +45,7 @@ export const Routes: Route[] = [{
 }, {
     method: 'patch',
     route: '/seminarski/:id',
-    action: [nadjiSeminarski, kreirajSeminarski]
+    action: [nadjiSeminarski, izmeniSeminarski]
 }, {
     method: 'delete',
     route: '/seminarski/:id',
