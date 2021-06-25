@@ -5,7 +5,7 @@ import { Button, Header, Menu } from 'semantic-ui-react'
 import { isStudent, Profesor, Student } from '../model'
 interface Props {
     user: Student | Profesor | undefined
-    full?: boolean,
+
     logout: () => void
 }
 export default function Navbar(props: Props) {

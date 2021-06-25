@@ -22,6 +22,7 @@ export async function kreirajSeminarski(req: Request, res: Response) {
             id: data.predmet.id
         }
     });
+
     res.json({ ...data, id: insertResult.identifiers[0].id });
 }
 
@@ -51,7 +52,7 @@ export async function nadjiSeminarski(req: Request, res: Response, next: any) {
     }
     const seminarski = await getRepository(Seminarski).findOne(id);
     if (!seminarski) {
-        res.sendStatus(400);
+        res.sendStatus(404);
         return;
     }
     (req as any).seminarski = seminarski;

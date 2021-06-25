@@ -11,7 +11,7 @@ import IspitiPage from './pages/SeminarskiPage';
 import PredmetiPage from './pages/PredmetiPage';
 import ObavezePage from './pages/ObavezePage';
 import PredatePrijavePage from './pages/PredatePrijavePage';
-import PredmetiIzmena from './pages/OceniPrijavePage';
+import OceniPrijavePage from './pages/OceniPrijavePage';
 import SeminarskiPage from './pages/SeminarskiPage';
 import RandomSlika from './pages/RandomSlika';
 axios.defaults.withCredentials = true;
@@ -19,8 +19,10 @@ function App() {
   const [user, setUser] = useState<Student | Profesor | undefined>(undefined);
   const [fetching, setFetching] = useState(true);
 
+
   useEffect(() => {
     axios.get(SERVER_URL + '/check').then(res => {
+
       setUser(res.data);
 
     }).finally(() => {
@@ -207,7 +209,7 @@ function App() {
               />
             </Route>
             <Route path='/prijava'>
-              <PredmetiIzmena profesor={user} />
+              <OceniPrijavePage profesor={user} />
             </Route>
             <Route path='/'>
               <PredmetiPage predmeti={user.predaje} />

@@ -14,7 +14,7 @@ interface Props {
 
 }
 
-export default function IspitiPage(props: Props) {
+export default function SeminarskiPage(props: Props) {
     const [selectedPredmet, setSelectedPredmet] = useState(-1);
     const [activeSeminarski, setActiveSeminarski] = useState<Seminarski | undefined>(undefined);
     const [openModal, setOpenModal] = useState(false);

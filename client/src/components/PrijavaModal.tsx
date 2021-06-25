@@ -19,6 +19,7 @@ export default function PrijavaModal(props: Props) {
     const [nazivTeme, setNazivTeme] = useState('');
     const fileRef = useRef<HTMLDivElement>(null);
     const [selProf, setSelProf] = useState<Profesor | undefined>(undefined)
+
     useEffect(() => {
         axios.get(SERVER_URL + '/profesor').then(res => {
             setProfesori(res.data);

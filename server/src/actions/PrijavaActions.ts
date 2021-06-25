@@ -13,6 +13,7 @@ export async function vratiSvePrijave(req: Request, res: Response) {
     if (user instanceof Student)
         prijave = await getRepository(Prijava).find({
             where: {
+
                 student: {
                     id: user.id
                 }
@@ -94,21 +95,13 @@ export async function obrisiPrijavu(req: Request, res: Response) {
     res.sendStatus(204);
 }
 export async function oceniPrijavu(req: Request, res: Response) {
-    console.log('oceni');
-    const staraPrijava = await getRepository(Prijava).findOne({
-        where: {
-            studentId: req.body.studentId,
-            seminarski: {
-                id: req.body.seminarski
-            }
-        }
-    })
+
 
     await getRepository(Prijava).update(
         {
             studentId: req.body.studentId,
             seminarski: {
-                id: staraPrijava.seminarski.id,
+                id: req.body.seminarski
 
             }
         }, {

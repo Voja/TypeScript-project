@@ -18,7 +18,7 @@ export default function SeminarskiModal(props: Props) {
     const [opis, setOpis] = useState('');
 
     useEffect(() => {
-        setMaksBrojPoena(props.seminarski?.maksBrojPoena || 0);
+        setMaksBrojPoena(props.maks || 0);
         setNaziv(props.seminarski?.naziv || '');
         setOpis(props.seminarski?.opis || '');
     }, [props.seminarski])
@@ -39,11 +39,11 @@ export default function SeminarskiModal(props: Props) {
                     props.close();
                 }}>
                     <Form.Input label='Naziv' value={naziv} onChange={setFormState(setNaziv)} />
-                    <Form.Input label='Maksimalan broj poena' min='0' max={props.maks ? props.maks + '' : '100'} type='number' value={maksBrojPoena} onChange={setFormState((val: string) => {
+                    <Form.Input disabled={props.maks === 0} label='Maksimalan broj poena' min='0' max={props.maks ? props.maks + '' : '100'} type='number' value={maksBrojPoena} onChange={setFormState((val: string) => {
                         setMaksBrojPoena(parseInt(val));
                     })} />
                     <Form.TextArea label='Opis' value={opis} onChange={setFormState(setOpis)} />
-                    <Form.Button fluid>Sacuvaj</Form.Button>
+                    <Form.Button disabled={props.maks === 0} fluid>Sacuvaj</Form.Button>
                 </Form>
             </Modal.Content>
         </Modal>
